@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ScrollPane?>
+<ScrollPane
+        xmlns="http://javafx.com/javafx/8.0.111"
+        xmlns:fx="http://javafx.com/fxml/1"
+        stylesheets="fxml/Style.css"
+        fitToWidth="true"
+        fx:controller="com.spbstu.controller.BlankEditController">
+   <GridPane
+           hgap="20" vgap="20"
+           alignment="CENTER"
+           fx:id="mainGrid"
+   >
+      <padding>
+         <Insets topRightBottomLeft="40" />
+      </padding>
+      <gridLinesVisible>false</gridLinesVisible>
+      <columnConstraints>
+         <ColumnConstraints />
+         <ColumnConstraints minWidth="40" />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
+      <Label
+              GridPane.ColumnIndex="0" GridPane.RowIndex="0" GridPane.ColumnSpan="2"
+              GridPane.halignment="CENTER"
+              fx:id="lblHeader" text="Бланк" />
+
+      <Label
+              GridPane.ColumnIndex="0" GridPane.RowIndex="1"
+              GridPane.halignment="RIGHT"
+              text="Штрихкод:" />
+      <Label
+              GridPane.ColumnIndex="1" GridPane.RowIndex="1" GridPane.ColumnSpan="2"
+              GridPane.halignment="LEFT"
+              fx:id="lblOutBarcode" text="?" />
+
+      <Label
+              GridPane.ColumnIndex="0" GridPane.RowIndex="2"
+              GridPane.halignment="RIGHT"
+              text="Вид анализа:" />
+      <Label
+              GridPane.ColumnIndex="1" GridPane.RowIndex="2" GridPane.ColumnSpan="2"
+              GridPane.halignment="LEFT"
+              fx:id="lblOutAnalysis" text="?" />
+
+      <Label
+              GridPane.ColumnIndex="0" GridPane.RowIndex="3"
+              GridPane.halignment="RIGHT"
+              text="Фамилия:" />
+      <Label
+              GridPane.ColumnIndex="1" GridPane.RowIndex="3" GridPane.ColumnSpan="2"
+              GridPane.halignment="LEFT"
+              fx:id="lblOutSurname" text="?" />
+
+      <Label
+              GridPane.ColumnIndex="0" GridPane.RowIndex="4"
+              GridPane.halignment="RIGHT"
+              text="Имя:" />
+      <Label
+              GridPane.ColumnIndex="1" GridPane.RowIndex="4" GridPane.ColumnSpan="2"
+              GridPane.halignment="LEFT"
+              fx:id="lblOutName" text="?" />
+
+      <Label
+              GridPane.ColumnIndex="0" GridPane.RowIndex="5"
+              GridPane.halignment="RIGHT"
+              text="Отчество:" />
+      <Label
+              GridPane.ColumnIndex="1" GridPane.RowIndex="5" GridPane.ColumnSpan="2"
+              GridPane.halignment="LEFT"
+              fx:id="lblOutPatronymic" text="?" />
+
+      <Label
+              GridPane.ColumnIndex="0" GridPane.RowIndex="0" GridPane.ColumnSpan="3"
+              GridPane.halignment="CENTER"
+              fx:id="lblErrorMessage" />
+
+      <Button
+              GridPane.ColumnIndex="0" GridPane.RowIndex="0"
+              GridPane.halignment="CENTER"
+              styleClass="btn-default"
+              fx:id="btnBack" mnemonicParsing="false"
+              onMouseClicked="#onBtnBackClick" text="Назад" />
+      <Button
+              GridPane.ColumnIndex="1" GridPane.RowIndex="0" GridPane.ColumnSpan="2"
+              GridPane.halignment="CENTER"
+              styleClass="btn-primary"
+              fx:id="btnApply" mnemonicParsing="false"
+              onMouseClicked="#onBtnApplyClick" text="Применить изменения" />
+   </GridPane>
+</ScrollPane>
