@@ -11,7 +11,8 @@ public enum RequestStatus {
     APPLIED("Принята"),
     IN_WORK("В работе"),
     CANCELED("Отклонена"),
-    FINISHED("Завершена");
+    FINISHED("Завершена"),
+    CLIENT_IS_AWARE("Клиент осведомлен");
 
     private final String asString;
 

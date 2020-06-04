@@ -54,9 +54,11 @@ public class AddRequestController {
     @FXML
     private void initialize() {
         List<String> analysisList = new ArrayList<String>();
-        analysisList.add("Общий анализ мочи с микроскопией осадка");
-        analysisList.add("Биохимический анализ кала");
-        analysisList.add("Клинический анализ крови");
+        try {
+            analysisList = facade.getAnalysisList();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         for (String analysis : analysisList) {
             CheckBox cbTitle = new CheckBox(analysis);
             //cbTitle.setPrefWidth(280);
@@ -82,7 +84,7 @@ public class AddRequestController {
         cbSex.setValue(request.getSex().toString());
         tfPassportSeries.setText(String.valueOf(request.getPassportSeries()));
         tfPassportNumber.setText(String.valueOf(request.getPassportNumber()));
-        SimpleDateFormat dFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US);
+        SimpleDateFormat dFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
         tfArrivalTime.setText(dFormat.format(request.getArrivalTime()).toString());
         List<String> analysisList = request.getAnalysisList();
         for (Node node : paneAnalysis.getChildren()) {
@@ -94,7 +96,7 @@ public class AddRequestController {
             }
         }
         lblHeader.setText("Согласование данных заявки");
-        btnApply.setText("Принять заявку");
+        btnApply.setText("Выбрать время");
     }
 
     @FXML
@@ -134,13 +136,13 @@ public class AddRequestController {
             lblErrorMessage.setText("Номер паспорта должен быть числом");
             return;
         }
-        SimpleDateFormat dFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.US);
+        SimpleDateFormat dFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
         String arrivalTimeStr = tfArrivalTime.getText();
         Date arrivalTime = null;
         try {
             arrivalTime = dFormat.parse(arrivalTimeStr);
         } catch (ParseException ex) {
-            lblErrorMessage.setText("Время прибытия должно быть в формате dd.MM.yyyy HH:mm");
+            lblErrorMessage.setText("Время прибытия должно быть в формате dd.MM.yyyy");
             return;
         }
         List<String> analysisList = new ArrayList<String>();
@@ -180,7 +182,7 @@ public class AddRequestController {
                 if (request.getStatus() == RequestStatus.CREATED) {
                     request.setStatus(RequestStatus.APPLIED);
                 }
-                facade.editRequest(request);
+                // facade.editRequest(request);
             } else {
                 facade.addRequest(request);
             }
@@ -188,7 +190,11 @@ public class AddRequestController {
             lblErrorMessage.setText(ex.getMessage());
             return;
         }
-        back();
+        if (forEdit) {
+            Main.showChooseTime(request);
+        } else {
+            back();
+        }
     }
 
     private void back() {

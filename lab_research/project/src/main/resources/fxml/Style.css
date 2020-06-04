@@ -329,3 +329,10 @@
 *.scroll-bar:horizontal *.decrement-arrow {
     -fx-shape: null;
 }
+
+
+/* scrollpane remove borders */
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}

@@ -20,7 +20,7 @@
         xmlns:fx="http://javafx.com/fxml/1"
         stylesheets="fxml/Style.css"
         fitToWidth="true"
-        fx:controller="com.spbstu.controller.BlankEditController">
+        fx:controller="com.spbstu.controller.BlankDisplayController">
    <GridPane
            hgap="20" vgap="20"
            alignment="CENTER"
@@ -103,11 +103,5 @@
               styleClass="btn-default"
               fx:id="btnBack" mnemonicParsing="false"
               onMouseClicked="#onBtnBackClick" text="Назад" />
-      <Button
-              GridPane.ColumnIndex="1" GridPane.RowIndex="0" GridPane.ColumnSpan="2"
-              GridPane.halignment="CENTER"
-              styleClass="btn-primary"
-              fx:id="btnApply" mnemonicParsing="false"
-              onMouseClicked="#onBtnApplyClick" text="Применить изменения" />
    </GridPane>
 </ScrollPane>

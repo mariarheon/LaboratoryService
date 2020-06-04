@@ -2,6 +2,7 @@ package com.spbstu.dbo;
 
 import com.spbstu.util.EAN13Generator;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,6 +16,42 @@ public class Form {
     private String barcode;
     private FormStatus status;
     private List<FormField> fields;
+    private Date collectionStartDateTime;
+    private Date collectionEndDateTime;
+    private Date researchStartDateTime;
+    private Date researchEndDateTime;
+
+    public Date getCollectionStartDateTime() {
+        return collectionStartDateTime;
+    }
+
+    public void setCollectionStartDateTime(Date collectionStartDateTime) {
+        this.collectionStartDateTime = collectionStartDateTime;
+    }
+
+    public Date getCollectionEndDateTime() {
+        return collectionEndDateTime;
+    }
+
+    public void setCollectionEndDateTime(Date collectionEndDateTime) {
+        this.collectionEndDateTime = collectionEndDateTime;
+    }
+
+    public Date getResearchStartDateTime() {
+        return researchStartDateTime;
+    }
+
+    public void setResearchStartDateTime(Date researchStartDateTime) {
+        this.researchStartDateTime = researchStartDateTime;
+    }
+
+    public Date getResearchEndDateTime() {
+        return researchEndDateTime;
+    }
+
+    public void setResearchEndDateTime(Date researchEndDateTime) {
+        this.researchEndDateTime = researchEndDateTime;
+    }
 
     public List<FormField> getFields() {
         return fields;

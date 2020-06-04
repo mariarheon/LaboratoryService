@@ -76,6 +76,20 @@ public class Main extends Application {
         }
     }
 
+    public static void showChooseTime(Request request) {
+        try {
+            String fxmlFile = "/fxml/ChooseTime.fxml";
+            FXMLLoader loader = new FXMLLoader();
+            Parent root = loader.load(Main.class.getResourceAsStream(fxmlFile));
+            ChooseTimeController controller = loader.getController();
+            controller.setRequest(request);
+            Scene scene = new Scene(root, 800, 600);
+            mainStage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void showBlankEdit(Form form) {
         try {
             String fxmlFile = "/fxml/BlankEdit.fxml";
@@ -83,6 +97,34 @@ public class Main extends Application {
             Parent root = loader.load(Main.class.getResourceAsStream(fxmlFile));
             BlankEditController controller = loader.getController();
             controller.setForm(form);
+            Scene scene = new Scene(root, 800, 600);
+            mainStage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void showBlankDisplay(Form form) {
+        try {
+            String fxmlFile = "/fxml/BlankDisplay.fxml";
+            FXMLLoader loader = new FXMLLoader();
+            Parent root = loader.load(Main.class.getResourceAsStream(fxmlFile));
+            BlankDisplayController controller = loader.getController();
+            controller.setForm(form);
+            Scene scene = new Scene(root, 800, 600);
+            mainStage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void showFormsForRequest(Request request) {
+        try {
+            String fxmlFile = "/fxml/FormsForRequest.fxml";
+            FXMLLoader loader = new FXMLLoader();
+            Parent root = loader.load(Main.class.getResourceAsStream(fxmlFile));
+            FormsForRequestController controller = loader.getController();
+            controller.setRequest(request);
             Scene scene = new Scene(root, 800, 600);
             mainStage.setScene(scene);
         } catch (IOException e) {

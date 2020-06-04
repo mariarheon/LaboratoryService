@@ -1,5 +1,7 @@
 use labresearch;
 
+drop table if exists `busy`;
+drop table if exists `schedule`;
 drop table if exists `form_field_link`;
 drop table if exists `form`;
 drop table if exists `form_field`;
@@ -26,18 +28,22 @@ insert into `user`(login, surname, name, patronymic, sex, passport_series,
 passport_number, role, phone, password) values ('admin',
 'Лихачёв', 'Абрам', 'Миронович', 'Мужской', 182766, 9899,
 'Администратор', '89001111111', sha1('pass'));
+
 insert into `user`(login, surname, name, patronymic, sex, passport_series,
 passport_number, role, phone, password) values ('assistant1',
 'Трофимова', 'Зинаида', 'Тихоновна', 'Женский', 900999, 2987,
 'Лаборант', '89002222222', sha1('pass'));
+
 insert into `user`(login, surname, name, patronymic, sex, passport_series,
 passport_number, role, phone, password) values ('assistant2',
 'Филатов', 'Денис', 'Дмитрьевич', 'Мужской', 987384, 3444,
 'Лаборант', '89002378769', sha1('pass'));
+
 insert into `user`(login, surname, name, patronymic, sex, passport_series,
 passport_number, role, phone, password) values ('client1',
 'Мишина', 'Наталья', 'Евсеевна', 'Женский', 946512, 3965,
 'Клиент', '89003333333', sha1('pass'));
+
 insert into `user`(login, surname, name, patronymic, sex, passport_series,
 passport_number, role, phone, password) values ('client2',
 'Артемьев', 'Варлаам', 'Тимофеевич', 'Мужской', 236779, 7462,
@@ -52,7 +58,7 @@ create table request (
     passport_series int not null,
     passport_number int not null,
     arrival_time datetime null,
-    status enum("На рассмотрении", "Принята", "В работе", "Отклонена", "Завершена") not null,
+    status enum("На рассмотрении", "Принята", "В работе", "Отклонена", "Завершена", "Клиент осведомлен") not null,
     client_id int not null,
     foreign key (client_id) references `user`(id)
 );
@@ -77,17 +83,19 @@ insert into request (surname, name, patronymic, sex, passport_series,
 
 create table analysis (
     id int not null auto_increment primary key,
-    name varchar(512) unique not null
+    name varchar(512) unique not null,
+    collection_minutes int not null,
+    research_minutes int not null
 );
 
-insert into analysis (name) values
-('Общий анализ мочи с микроскопией осадка');
+insert into analysis (name, collection_minutes, research_minutes) values
+('Общий анализ мочи с микроскопией осадка', 5, 30);
 
-insert into analysis (name) values
-('Биохимический анализ кала');
+insert into analysis (name, collection_minutes, research_minutes) values
+('Биохимический анализ кала', 5, 40);
 
-insert into analysis (name) values
-('Клинический анализ крови');
+insert into analysis (name, collection_minutes, research_minutes) values
+('Клинический анализ крови', 20, 45);
 
 create table request_analysis_link (
     request_id int not null,
@@ -400,3 +408,184 @@ create table form_field_link (
     foreign key(field_id) references form_field(id)
 );
 
+create table schedule (
+    id int not null auto_increment primary key,
+    assistant_id int not null,
+    weekday enum('пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс') not null,
+    start_time time not null,
+    end_time time not null,
+    foreign key (assistant_id) references user(id)
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Трофимова Зинаида Тихоновна'),
+'пн',
+'09:00',
+'12:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Трофимова Зинаида Тихоновна'),
+'пн',
+'13:00',
+'18:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Трофимова Зинаида Тихоновна'),
+'вт',
+'09:00',
+'12:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Трофимова Зинаида Тихоновна'),
+'вт',
+'13:00',
+'18:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Трофимова Зинаида Тихоновна'),
+'ср',
+'09:00',
+'12:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Трофимова Зинаида Тихоновна'),
+'ср',
+'13:00',
+'18:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Трофимова Зинаида Тихоновна'),
+'чт',
+'09:00',
+'12:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Трофимова Зинаида Тихоновна'),
+'чт',
+'13:00',
+'18:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Трофимова Зинаида Тихоновна'),
+'пт',
+'09:00',
+'12:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Трофимова Зинаида Тихоновна'),
+'пт',
+'13:00',
+'18:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Филатов Денис Дмитрьевич'),
+'пн',
+'09:00',
+'12:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Филатов Денис Дмитрьевич'),
+'пн',
+'13:00',
+'18:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Филатов Денис Дмитрьевич'),
+'вт',
+'09:00',
+'12:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Филатов Денис Дмитрьевич'),
+'вт',
+'13:00',
+'18:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Филатов Денис Дмитрьевич'),
+'ср',
+'09:00',
+'12:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Филатов Денис Дмитрьевич'),
+'ср',
+'13:00',
+'18:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Филатов Денис Дмитрьевич'),
+'чт',
+'09:00',
+'12:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Филатов Денис Дмитрьевич'),
+'чт',
+'13:00',
+'18:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Филатов Денис Дмитрьевич'),
+'пт',
+'09:00',
+'12:00'
+);
+
+insert into schedule (assistant_id, weekday, start_time, end_time)
+values (
+(select id from `user` where concat(surname, ' ', name, ' ', patronymic) = 'Филатов Денис Дмитрьевич'),
+'пт',
+'13:00',
+'18:00'
+);
+
+create table busy (
+    id int not null auto_increment primary key,
+    assistant_id int not null,
+    the_date date not null,
+    start_time time not null,
+    end_time time not null,
+    form_id int not null,
+    reason enum('сбор', 'исследование') not null,
+    foreign key (assistant_id) references `user`(id),
+    foreign key (form_id) references form(id),
+    unique (form_id, reason)
+);

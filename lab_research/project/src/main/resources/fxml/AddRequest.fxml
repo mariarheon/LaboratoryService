@@ -101,10 +101,10 @@
     <Label
             GridPane.ColumnIndex="0" GridPane.RowIndex="7"
             GridPane.halignment="RIGHT"
-            text="Время прибытия:" />
+            text="Желаемая дата прибытия:" />
     <TextField
             GridPane.ColumnIndex="1" GridPane.RowIndex="7"
-            promptText="10.05.2050 12:30"
+            promptText="10.05.2050"
             fx:id="tfArrivalTime" />
 
     <Label
@@ -112,10 +112,13 @@
             GridPane.halignment="CENTER"
             text="Выберите нужные пункты:" />
 
-    <VBox
-            GridPane.ColumnIndex="2" GridPane.RowIndex="2" GridPane.RowSpan="5"
-            spacing="20"
-            fx:id="paneAnalysis" />
+    <ScrollPane
+            GridPane.ColumnIndex="2" GridPane.RowIndex="2" GridPane.RowSpan="6"
+    >
+        <VBox
+                spacing="20"
+                fx:id="paneAnalysis" />
+    </ScrollPane>
 
     <Label
             GridPane.ColumnIndex="0" GridPane.RowIndex="8" GridPane.ColumnSpan="3"

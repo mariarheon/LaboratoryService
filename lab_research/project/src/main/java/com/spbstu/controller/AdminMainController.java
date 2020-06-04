@@ -52,8 +52,6 @@ public class AdminMainController {
     private TableColumn<Request, Date> colArrivalTime;
     @FXML
     private TableColumn<Request, String> colBtnEdit;
-    @FXML
-    private TableColumn<Request, String> colBtnToAssistant;
 
     @FXML
     private void initialize() {
@@ -75,10 +73,8 @@ public class AdminMainController {
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colArrivalTime.setCellValueFactory(new PropertyValueFactory<>("arrivalTime"));
         colBtnEdit.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
-        colBtnToAssistant.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
         setArrivalTimeCellFactory();
         setBtnEditCellFactory();
-        setBtnToAssistantCellFactory();
 
         ObservableList<Request> items = FXCollections.observableArrayList();
         items.addAll(requestList);
@@ -106,38 +102,6 @@ public class AdminMainController {
         });
     }
 
-    private void setBtnToAssistantCellFactory() {
-        Callback<TableColumn<Request, String>, TableCell<Request, String>> btnDisplayCellFactory
-                = new Callback<TableColumn<Request, String>, TableCell<Request, String>>() {
-            @Override
-            public TableCell<Request, String> call(TableColumn<Request, String> param) {
-                final TableCell<Request, String> cell = new TableCell<Request, String>() {
-
-                    final Button btn = new Button("Передать лаборанту");
-
-                    @Override
-                    public void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        btn.getStyleClass().add("btn-default");
-                        if (empty || getTableView().getItems().get(getIndex()).getStatus() != RequestStatus.APPLIED) {
-                            setGraphic(null);
-                            setText(null);
-                        } else {
-                            btn.setOnAction(event -> {
-                                Request request = getTableView().getItems().get(getIndex());
-                                Main.showChooseAssistant(request);
-                            });
-                            setGraphic(btn);
-                            setText(null);
-                        }
-                    }
-                };
-                return cell;
-            }
-        };
-        colBtnToAssistant.setCellFactory(btnDisplayCellFactory);
-    }
-
     private void setBtnEditCellFactory() {
         Callback<TableColumn<Request, String>, TableCell<Request, String>> btnDisplayCellFactory
                 = new Callback<TableColumn<Request, String>, TableCell<Request, String>>() {
@@ -145,21 +109,34 @@ public class AdminMainController {
             public TableCell<Request, String> call(TableColumn<Request, String> param) {
                 final TableCell<Request, String> cell = new TableCell<Request, String>() {
 
-                    final Button btn = new Button("Согласовать данные");
+                    final Button btn1 = new Button("Согласовать данные");
+                    final Button btn2 = new Button("Передать лаборанту");
 
                     @Override
                     public void updateItem(String item, boolean empty) {
                         super.updateItem(item, empty);
-                        btn.getStyleClass().add("btn-default");
+                        btn1.getStyleClass().add("btn-default");
+                        btn2.getStyleClass().add("btn-default");
                         if (empty) {
                             setGraphic(null);
                             setText(null);
                         } else {
-                            btn.setOnAction(event -> {
+                            btn1.setOnAction(event -> {
                                 Request request = getTableView().getItems().get(getIndex());
                                 Main.showEditRequest(request);
                             });
-                            setGraphic(btn);
+                            btn2.setOnAction(event -> {
+                                Request request = getTableView().getItems().get(getIndex());
+                                Main.showChooseAssistant(request);
+                            });
+                            RequestStatus status = getTableView().getItems().get(getIndex()).getStatus();
+                            if (status == RequestStatus.APPLIED) {
+                                setGraphic(btn2);
+                            } else if (status == RequestStatus.CREATED) {
+                                setGraphic(btn1);
+                            } else {
+                                setGraphic(null);
+                            }
                             setText(null);
                         }
                     }

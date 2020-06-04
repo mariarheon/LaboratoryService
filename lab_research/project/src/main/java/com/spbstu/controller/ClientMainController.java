@@ -2,6 +2,7 @@ package com.spbstu.controller;
 
 import com.spbstu.Main;
 import com.spbstu.dbo.Request;
+import com.spbstu.dbo.RequestStatus;
 import com.spbstu.facade.Facade;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -102,22 +103,26 @@ public class ClientMainController {
             public TableCell<Request, String> call(TableColumn<Request, String> param) {
                 final TableCell<Request, String> cell = new TableCell<Request, String>() {
 
-                    final Button btn = new Button("Подробности");
+                    final Button btn = new Button("Результаты");
 
                     @Override
                     public void updateItem(String item, boolean empty) {
                         super.updateItem(item, empty);
                         btn.getStyleClass().add("btn-default");
+                        setText(null);
                         if (empty) {
                             setGraphic(null);
-                            setText(null);
-                        } else {
+                            return;
+                        }
+                        RequestStatus status = getTableView().getItems().get(getIndex()).getStatus();
+                        if (status == RequestStatus.FINISHED || status == RequestStatus.CLIENT_IS_AWARE) {
                             btn.setOnAction(event -> {
                                 Request request = getTableView().getItems().get(getIndex());
-                                System.out.println(request.getName());
+                                Main.showFormsForRequest(request);
                             });
                             setGraphic(btn);
-                            setText(null);
+                        } else {
+                            setGraphic(null);
                         }
                     }
                 };

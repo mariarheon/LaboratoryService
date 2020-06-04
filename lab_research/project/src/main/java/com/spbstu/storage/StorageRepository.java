@@ -3,16 +3,14 @@
  */
 package com.spbstu.storage;
 
-import com.spbstu.dbo.Form;
-import com.spbstu.dbo.Request;
-import com.spbstu.dbo.Role;
-import com.spbstu.dbo.User;
+import com.spbstu.dbo.*;
 import com.spbstu.exceptions.AuthException;
 import com.spbstu.exceptions.UserAlreadyExistsException;
 import com.spbstu.exceptions.UserNotFoundException;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 public class StorageRepository {
@@ -20,6 +18,7 @@ public class StorageRepository {
     private UserMapper userMapper;
     private RequestMapper requestMapper;
     private FormMapper formMapper;
+    private ScheduleMapper scheduleMapper;
 
     private static StorageRepository inst;
 
@@ -28,6 +27,7 @@ public class StorageRepository {
             userMapper = new UserMapper();
             requestMapper = new RequestMapper();
             formMapper = new FormMapper();
+            scheduleMapper = new ScheduleMapper();
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
@@ -79,7 +79,7 @@ public class StorageRepository {
         requestMapper.add(request);
     }
 
-    public void editRequest(Request request) throws SQLException {
+    public void updateRequest(Request request) throws SQLException {
         requestMapper.update(request);
     }
 
@@ -91,8 +91,36 @@ public class StorageRepository {
         return formMapper.findForAssistant(assistantId);
     }
 
+    public List<Form> getFormsByRequest(Request request) throws SQLException {
+        return formMapper.findByRequest(request);
+    }
+
     public void updateForm(Form form) throws SQLException {
         formMapper.update(form);
+    }
+
+    public List<String> getAnalysisList() throws SQLException {
+        return requestMapper.findAllAnalysis();
+    }
+
+    public int getRequiredMinutesForCollection(String analysis) throws SQLException {
+        return scheduleMapper.getRequiredMinutesForCollection(analysis);
+    }
+
+    public int getRequiredMinutesForResearch(String analysis) throws SQLException {
+        return scheduleMapper.getRequiredMinutesForResearch(analysis);
+    }
+
+    public int getRequiredMinutesForCollection(Request request) throws SQLException {
+        return scheduleMapper.getRequiredMinutesForCollection(request);
+    }
+
+    public List<TimeSpan> getAssistantSchedule(User assistant, Weekday weekday) throws SQLException {
+        return scheduleMapper.getAssistantSchedule(assistant, weekday);
+    }
+
+    public List<TimeSpan> getBusyForAssistantByDate(User assistant, Date date) throws SQLException {
+        return scheduleMapper.getBusyForAssistantByDate(assistant, date);
     }
 
     /*

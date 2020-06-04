@@ -4,10 +4,7 @@
 
 package com.spbstu.facade;
 
-import com.spbstu.dbo.Form;
-import com.spbstu.dbo.Request;
-import com.spbstu.dbo.Role;
-import com.spbstu.dbo.User;
+import com.spbstu.dbo.*;
 
 import java.util.Date;
 import java.util.List;
@@ -25,4 +22,9 @@ public interface Facade {
     void addForms(Request request, User assistant) throws Exception;
     List<Form> getForms() throws Exception;
     void updateForm(Form form) throws Exception;
+    void finishFormWork(Form form) throws Exception;
+    List<Form> getFormsByRequest(Request request) throws Exception;
+    List<String> getAnalysisList() throws Exception;
+    List<TimeSpan> getTimeForAppointment(Request request) throws Exception;
+    void sendToRandomAssistant(Request request, Time time) throws Exception;
 }

@@ -20,7 +20,7 @@
 <GridPane
         xmlns="http://javafx.com/javafx/8.0.111"
         xmlns:fx="http://javafx.com/fxml"
-        fx:controller="com.spbstu.controller.AdminMainController"
+        fx:controller="com.spbstu.controller.FormsForRequestController"
         hgap="20" vgap="20"
         alignment="CENTER"
         stylesheets="fxml/Style.css"
@@ -40,34 +40,32 @@
     <Label
             GridPane.ColumnIndex="0" GridPane.RowIndex="0"
             GridPane.halignment="CENTER"
-            fx:id="lblHeader" text="Заявки клиентов" />
+            fx:id="lblHeader" text="Бланки анализов" />
 
     <TableView
             GridPane.ColumnIndex="0" GridPane.RowIndex="1"
-            fx:id="tableRequests">
+            fx:id="tableForms">
         <columns>
-            <TableColumn fx:id="colStatus" editable="false" prefWidth="110" text="Статус" />
-            <TableColumn fx:id="colPhone" editable="false" prefWidth="110" text="Телефон" />
-            <TableColumn fx:id="colClientName" editable="false" prefWidth="70" text="Имя клиента" />
-            <TableColumn fx:id="colBtnEdit" editable="false" prefWidth="250" text="" />
-            <TableColumn fx:id="colSurname" editable="false" prefWidth="70" text="Фамилия" />
+            <TableColumn fx:id="colBarcode" editable="false" prefWidth="110" text="Штрих-код" />
+            <TableColumn fx:id="colSurname" editable="false" prefWidth="100" text="Фамилия" />
             <TableColumn fx:id="colName" editable="false" prefWidth="70" text="Имя" />
-            <TableColumn fx:id="colPatronymic" editable="false" prefWidth="70" text="Отчество" />
-            <TableColumn fx:id="colSex" editable="false" prefWidth="70" text="Пол" />
-            <TableColumn fx:id="colPassportSeries" editable="false" prefWidth="70" text="Серия" />
-            <TableColumn fx:id="colPassportNumber" editable="false" prefWidth="70" text="Номер" />
-            <TableColumn fx:id="colAnalysis" editable="false" prefWidth="210" text="Анализы" />
-            <TableColumn fx:id="colArrivalTime" editable="false" prefWidth="110" text="Время прибытия" />
+            <TableColumn fx:id="colPatronymic" editable="false" prefWidth="100" text="Отчество" />
+            <TableColumn fx:id="colAnalysis" editable="false" prefWidth="210" text="Анализ" />
+            <TableColumn fx:id="colBtnDisplay" editable="false" prefWidth="250" text="Просмотр" />
         </columns>
     </TableView>
-    <AnchorPane
+    <Label
             GridPane.ColumnIndex="0" GridPane.RowIndex="2"
+            fx:id="lblErrorMessage" text=""
+        />
+    <AnchorPane
+            GridPane.ColumnIndex="0" GridPane.RowIndex="3"
     >
         <Button
                 AnchorPane.rightAnchor="0"
                 styleClass="btn-default"
                 fx:id="btnBack" mnemonicParsing="false"
-                text="Выход из аккаунта"
+                text="Назад"
                 onMouseClicked="#onBtnBackClick" />
     </AnchorPane>
 </GridPane>

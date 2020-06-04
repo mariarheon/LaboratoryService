@@ -183,6 +183,18 @@ public class RequestMapper {
         return res;
     }
 
+    public List<String> findAllAnalysis() throws SQLException {
+        String query = "select name\n" +
+                "from analysis;";
+        PreparedStatement stat = connection.prepareStatement(query);
+        ResultSet rs = stat.executeQuery();
+        List<String> res = new ArrayList<String>();
+        while (rs.next()) {
+            res.add(rs.getString("name"));
+        }
+        return res;
+    }
+
     private List<String> findAnalysis(int requestId) throws SQLException {
         String query = "select a.name\n" +
                 "from request_analysis_link l\n" +
