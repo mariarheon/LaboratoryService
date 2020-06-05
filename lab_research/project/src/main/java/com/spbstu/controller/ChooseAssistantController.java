@@ -52,7 +52,7 @@ public class ChooseAssistantController {
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colPatronymic.setCellValueFactory(new PropertyValueFactory<>("patronymic"));
         colBtnChoose.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
-        setBtnChooseCellFactory();
+        // setBtnChooseCellFactory();
 
         ObservableList<User> items = FXCollections.observableArrayList();
         items.addAll(assistantList);
@@ -62,6 +62,8 @@ public class ChooseAssistantController {
     public void setRequest(Request request) {
         this.request = request;
     }
+
+    /*
 
     private void setBtnChooseCellFactory() {
         Callback<TableColumn<User, String>, TableCell<User, String>> btnDisplayCellFactory
@@ -89,10 +91,6 @@ public class ChooseAssistantController {
                                     return;
                                 }
                                 Main.showAdminMain();
-                                /*
-                                Request request = getTableView().getItems().get(getIndex());
-                                Main.showEditRequest(request);
-                                */
                             });
                             setGraphic(btn);
                             setText(null);
@@ -104,6 +102,8 @@ public class ChooseAssistantController {
         };
         colBtnChoose.setCellFactory(btnDisplayCellFactory);
     }
+
+    */
 
     @FXML
     private void onBtnBackClick() {

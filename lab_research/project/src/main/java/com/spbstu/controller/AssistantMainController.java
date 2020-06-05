@@ -13,7 +13,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,6 +27,14 @@ public class AssistantMainController {
     @FXML
     private TableView<Form> tableForms;
 
+    @FXML
+    private TableColumn<Form, Date> colCollectionStart;
+    @FXML
+    private TableColumn<Form, Date> colCollectionEnd;
+    @FXML
+    private TableColumn<Form, Date> colResearchStart;
+    @FXML
+    private TableColumn<Form, Date> colResearchEnd;
     @FXML
     private TableColumn<Form, String> colBarcode;
     @FXML
@@ -51,6 +61,10 @@ public class AssistantMainController {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        colCollectionStart.setCellValueFactory(new PropertyValueFactory<>("collectionStartDateTime"));
+        colCollectionEnd.setCellValueFactory(new PropertyValueFactory<>("collectionEndDateTime"));
+        colResearchStart.setCellValueFactory(new PropertyValueFactory<>("researchStartDateTime"));
+        colResearchEnd.setCellValueFactory(new PropertyValueFactory<>("researchEndDateTime"));
         colBarcode.setCellValueFactory(new PropertyValueFactory<>("barcode"));
         colSurname.setCellValueFactory(new PropertyValueFactory<>("requestSurname"));
         colName.setCellValueFactory(new PropertyValueFactory<>("requestName"));
@@ -58,12 +72,41 @@ public class AssistantMainController {
         colAnalysis.setCellValueFactory(new PropertyValueFactory<>("analysis"));
         colBtnEdit.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
         colBtnFinish.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
+        setDateTimeCellFactory(colCollectionStart);
+        setDateTimeCellFactory(colCollectionEnd);
+        setDateTimeCellFactory(colResearchStart);
+        setDateTimeCellFactory(colResearchEnd);
         setBtnEditCellFactory();
         setBtnFinishCellFactory();
 
         ObservableList<Form> items = FXCollections.observableArrayList();
         items.addAll(formList);
         tableForms.setItems(items);
+    }
+
+    private void setDateTimeCellFactory(TableColumn<Form, Date> column) {
+        column.setCellFactory(col -> {
+            TableCell<Form, Date> cell = new TableCell<Form, Date>() {
+                private SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+
+                @Override
+                protected void updateItem(Date item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if(empty) {
+                        setText(null);
+                    }
+                    else {
+                        if (item == null) {
+                            setText("Неизвестно");
+                        } else {
+                            setText(format.format(item));
+                        }
+                    }
+                }
+            };
+
+            return cell;
+        });
     }
 
     private void setBtnEditCellFactory() {

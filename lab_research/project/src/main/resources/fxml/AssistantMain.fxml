@@ -46,6 +46,10 @@
             GridPane.ColumnIndex="0" GridPane.RowIndex="1"
             fx:id="tableForms">
         <columns>
+            <TableColumn fx:id="colCollectionStart" editable="false" prefWidth="110" text="Начало сбора" />
+            <TableColumn fx:id="colCollectionEnd" editable="false" prefWidth="110" text="Конец сбора" />
+            <TableColumn fx:id="colResearchStart" editable="false" prefWidth="110" text="Начало исследования" />
+            <TableColumn fx:id="colResearchEnd" editable="false" prefWidth="110" text="Конец исследования" />
             <TableColumn fx:id="colBarcode" editable="false" prefWidth="110" text="Штрих-код" />
             <TableColumn fx:id="colSurname" editable="false" prefWidth="100" text="Фамилия" />
             <TableColumn fx:id="colName" editable="false" prefWidth="70" text="Имя" />

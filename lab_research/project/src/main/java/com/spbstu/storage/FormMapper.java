@@ -5,6 +5,7 @@ import com.spbstu.dbo.*;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -24,12 +25,23 @@ public class FormMapper {
     public void add(Form form) throws SQLException {
         addForm(form);
         addFields(form);
+        addBusyTimes(form);
     }
 
     public void update(Form form) throws SQLException {
+        removeBusyTimes(form);
         removeFields(form);
         editForm(form);
         addFieldsWithValue(form);
+        addBusyTimes(form);
+    }
+
+    private void removeBusyTimes(Form form) throws SQLException {
+        String query = "delete from `busy`\n" +
+                " where form_id = ?;";
+        PreparedStatement stat = connection.prepareStatement(query, Statement.NO_GENERATED_KEYS);
+        stat.setInt(1, form.getId());
+        stat.execute();
     }
 
     private void removeFields(Form form) throws SQLException {
@@ -60,15 +72,45 @@ public class FormMapper {
 
     private void addFieldsWithValue(Form form) throws SQLException {
         List<FormField> formFieldList = form.getFields();
+        if (formFieldList == null) {
+            return;
+        }
         for (FormField formField : formFieldList) {
-            String query = "insert `form_field_link` set\n" +
-                    "form_id = ?,\n" +
-                    "field_id = ?,\n" +
-                    "value = ?;";
+            String query = "insert into `form_field_link` (form_id, field_id, value) values\n" +
+                    "(?, ?, ?);";
             PreparedStatement stat = connection.prepareStatement(query, Statement.NO_GENERATED_KEYS);
             stat.setInt(1, form.getId());
             stat.setInt(2, formField.getId());
             stat.setString(3, formField.getValue());
+            stat.execute();
+        }
+    }
+
+    private void addBusyTimes(Form form) throws SQLException {
+        java.util.Date collectionStart = form.getCollectionStartDateTime();
+        java.util.Date collectionEnd = form.getCollectionEndDateTime();
+        java.util.Date researchStart = form.getResearchStartDateTime();
+        java.util.Date researchEnd = form.getResearchEndDateTime();
+        if (collectionStart != null && collectionEnd != null) {
+            String query = "insert into `busy` (assistant_id, the_date, start_time, end_time, form_id, reason)\n" +
+                    "values (?, ?, ?, ?, ?, 'сбор');";
+            PreparedStatement stat = connection.prepareStatement(query, Statement.NO_GENERATED_KEYS);
+            stat.setInt(1, form.getAssistant().getId());
+            stat.setDate(2, new java.sql.Date(collectionStart.getTime()));
+            stat.setTime(3, new java.sql.Time(collectionStart.getTime()));
+            stat.setTime(4, new java.sql.Time(collectionEnd.getTime()));
+            stat.setInt(5, form.getId());
+            stat.execute();
+        }
+        if (researchStart != null && researchEnd != null) {
+            String query = "insert into `busy` (assistant_id, the_date, start_time, end_time, form_id, reason)\n" +
+                    "values (?, ?, ?, ?, ?, 'исследование');";
+            PreparedStatement stat = connection.prepareStatement(query, Statement.NO_GENERATED_KEYS);
+            stat.setInt(1, form.getAssistant().getId());
+            stat.setDate(2, new java.sql.Date(researchStart.getTime()));
+            stat.setTime(3, new java.sql.Time(researchStart.getTime()));
+            stat.setTime(4, new java.sql.Time(researchEnd.getTime()));
+            stat.setInt(5, form.getId());
             stat.execute();
         }
     }
@@ -129,8 +171,70 @@ public class FormMapper {
         rs.close();
         for (Form f : res) {
             f.setFields(findFields(f.getId()));
+            fillWithTimes(f);
         }
         return res;
+    }
+
+    private void fillWithTimes(Form form) throws SQLException {
+        fillWithCollectionTimes(form);
+        fillWithResearchTimes(form);
+    }
+
+    private void fillWithCollectionTimes(Form form) throws SQLException {
+        String query = "select the_date, start_time, end_time\n" +
+                "from busy\n" +
+                "where form_id = ? and reason = 'сбор';";
+        PreparedStatement stat = connection.prepareStatement(query);
+        stat.setInt(1, form.getId());
+        ResultSet rs = stat.executeQuery();
+        Calendar c = Calendar.getInstance();
+        if (rs.next()) {
+            java.sql.Date date = rs.getDate("the_date");
+            java.sql.Time startTime = rs.getTime("start_time");
+            java.sql.Time endTime = rs.getTime("end_time");
+            java.util.Date collectionStart = mergeDateAndTime(date, startTime);
+            java.util.Date collectionEnd = mergeDateAndTime(date, endTime);
+            form.setCollectionStartDateTime(collectionStart);
+            form.setCollectionEndDateTime(collectionEnd);
+        }
+        rs.close();
+    }
+
+    private void fillWithResearchTimes(Form form) throws SQLException {
+        String query = "select the_date, start_time, end_time\n" +
+                "from busy\n" +
+                "where form_id = ? and reason = 'исследование';";
+        PreparedStatement stat = connection.prepareStatement(query);
+        stat.setInt(1, form.getId());
+        ResultSet rs = stat.executeQuery();
+        Calendar c = Calendar.getInstance();
+        if (rs.next()) {
+            java.sql.Date date = rs.getDate("the_date");
+            java.sql.Time startTime = rs.getTime("start_time");
+            java.sql.Time endTime = rs.getTime("end_time");
+            java.util.Date researchStart = mergeDateAndTime(date, startTime);
+            java.util.Date researchEnd = mergeDateAndTime(date, endTime);
+            form.setResearchStartDateTime(researchStart);
+            form.setResearchEndDateTime(researchEnd);
+        }
+        rs.close();
+    }
+
+    private java.util.Date mergeDateAndTime(java.sql.Date date, java.sql.Time time) {
+        // Construct date and time objects
+        Calendar dateCal = Calendar.getInstance();
+        dateCal.setTime(date);
+        Calendar timeCal = Calendar.getInstance();
+        timeCal.setTime(time);
+
+        // Extract the time of the "time" object to the "date"
+        dateCal.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
+        dateCal.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
+        dateCal.set(Calendar.SECOND, timeCal.get(Calendar.SECOND));
+
+        // Get the time value!
+        return dateCal.getTime();
     }
 
     public List<Form> findByRequest(Request requestArg) throws SQLException {
@@ -161,6 +265,7 @@ public class FormMapper {
         rs.close();
         for (Form f : res) {
             f.setFields(findFields(f.getId()));
+            fillWithTimes(f);
         }
         return res;
     }

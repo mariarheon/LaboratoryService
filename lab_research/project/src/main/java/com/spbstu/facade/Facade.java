@@ -19,7 +19,6 @@ public interface Facade {
     void addRequest(Request request) throws Exception;
     void editRequest(Request request) throws Exception;
     User getCurrentUser();
-    void addForms(Request request, User assistant) throws Exception;
     List<Form> getForms() throws Exception;
     void updateForm(Form form) throws Exception;
     void finishFormWork(Form form) throws Exception;

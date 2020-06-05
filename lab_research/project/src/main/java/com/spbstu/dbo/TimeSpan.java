@@ -163,6 +163,10 @@ public class TimeSpan {
         return time.afterOrEqual(startTime) && time.beforeOrEqual(endTime);
     }
 
+    public int getDurationAsMinutes() {
+        return endTime.getTotalMinutes() - startTime.getTotalMinutes();
+    }
+
     /*
     public static void main(String[] args) {
         List<TimeSpan> list = new ArrayList<>();

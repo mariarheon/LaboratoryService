@@ -9,6 +9,7 @@ import com.spbstu.exceptions.BadChoosedTimeException;
 import com.spbstu.schedule.ScheduleHelper;
 import com.spbstu.storage.StorageRepository;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -64,18 +65,23 @@ public class FacadeImpl implements Facade {
         return currentUser;
     }
 
-    @Override
-    public void addForms(Request request, User assistant) throws Exception {
+    private void addForms(Request request, User assistant) throws Exception {
         List<String> analysisList = request.getAnalysisList();
         ScheduleHelper scheduleHelper = new ScheduleHelper(repository, request);
         int minOffset = 0;
+        List<Form> forms = new ArrayList<>();
         for (String analysis : analysisList) {
             Form form = new Form();
             form.setRequest(request);
             form.setAnalysis(analysis);
             form.setAssistant(assistant);
-            minOffset += scheduleHelper.setTimes(form, minOffset);
+            minOffset += scheduleHelper.setCollectionTimes(form, minOffset);
             repository.addForm(form);
+            forms.add(form);
+        }
+        for (Form form : forms) {
+            scheduleHelper.setResearchTimes(form);
+            repository.updateForm(form);
         }
         request.setStatus(RequestStatus.IN_WORK);
         repository.updateRequest(request);

@@ -72,7 +72,7 @@ insert into request (surname, name, patronymic, sex, passport_series,
 insert into request (surname, name, patronymic, sex, passport_series,
     passport_number, arrival_time, status, client_id) values
 ('Петрова', 'Алена', 'Ивановна', 'Женский', 777777, 7777, '2020-06-21 18:00:00',
-'Принята',
+'На рассмотрении',
 (select id from `user` where login = 'client1'));
 
 insert into request (surname, name, patronymic, sex, passport_series,

@@ -136,26 +136,65 @@ public class ScheduleHelper {
     }
 
     // returns collection min count for this
-    public int setTimes(Form form, int minOffset) throws SQLException {
+    public int setCollectionTimes(Form form, int minOffset) throws SQLException {
         String analysis = form.getAnalysis();
         int collectionReqMin = repo.getRequiredMinutesForCollection(analysis);
-        int researchReqMin = repo.getRequiredMinutesForResearch(analysis);
         Calendar c = Calendar.getInstance();
         c.setTime(request.getArrivalTime());
         c.add(Calendar.MINUTE, minOffset);
         form.setCollectionStartDateTime(c.getTime());
         c.add(Calendar.MINUTE, collectionReqMin);
         form.setCollectionEndDateTime(c.getTime());
-        Date researchStartTime = chooseResearchStartTime(form.getAssistant(), researchReqMin, form);
-        form.setResearchStartDateTime(researchStartTime);
-        c.setTime(researchStartTime);
-        c.add(Calendar.MINUTE, researchReqMin);
-        form.setResearchEndDateTime(c.getTime());
         return collectionReqMin;
     }
 
-    private Date chooseResearchStartTime(User assistant, int researchReqMin, Form form) {
-        // use additional busy from form
-        return null;
+    public void setResearchTimes(Form form) throws SQLException {
+        String analysis = form.getAnalysis();
+        int researchReqMin = repo.getRequiredMinutesForResearch(analysis);
+        Date researchStartTime = chooseResearchStartTime(form, researchReqMin);
+        form.setResearchStartDateTime(researchStartTime);
+        Calendar c = Calendar.getInstance();
+        c.setTime(researchStartTime);
+        c.add(Calendar.MINUTE, researchReqMin);
+        form.setResearchEndDateTime(c.getTime());
+    }
+
+    private Date chooseResearchStartTime(Form form, int researchReqMin) throws SQLException {
+        Date collectionEnd = form.getCollectionEndDateTime();
+        Date curDate = getOnlyDate(collectionEnd);
+        Calendar c = Calendar.getInstance();
+        User assistant = form.getAssistant();
+        boolean isFirstDate = true;
+        while (true) {
+            List<TimeSpan> availableTimes = getAvailableStartTimes(curDate, assistant, researchReqMin);
+            for (TimeSpan ts : availableTimes) {
+                c.setTime(curDate);
+                c.set(Calendar.HOUR_OF_DAY, ts.getStartTime().getHour());
+                c.set(Calendar.MINUTE, ts.getStartTime().getMinute());
+                Date tmp = c.getTime();
+                if (ts.getDurationAsMinutes() < researchReqMin) {
+                    continue;
+                }
+                if (isFirstDate) {
+                    if (tmp.before(collectionEnd)) {
+                        continue;
+                    }
+                }
+                return tmp;
+            }
+            c.setTime(curDate);
+            c.add(Calendar.DATE, 1);
+            curDate = c.getTime();
+            isFirstDate = false;
+        }
+    }
+
+    private List<TimeSpan> getAvailableStartTimes(Date date, User assistant, int reqMinutes) throws SQLException {
+        Weekday reqWeekday = getWeekday(date);
+        List<TimeSpan> schedule = getSchedule(assistant, reqWeekday);
+        List<TimeSpan> busy = getBusyByDate(assistant, date);
+        List<TimeSpan> free = getFreeTime(schedule, busy);
+        List<TimeSpan> startTimeList = getStartTime(free, reqMinutes);
+        return startTimeList;
     }
 }

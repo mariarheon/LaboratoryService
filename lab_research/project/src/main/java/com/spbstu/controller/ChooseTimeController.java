@@ -41,6 +41,12 @@ public class ChooseTimeController {
     @FXML
     public void setRequest(Request request) {
         this.request = request;
+        try {
+            facade.editRequest(request);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            lblErrorMessage.setText(ex.getMessage());
+        }
         List<TimeSpan> freeTime = null;
         try {
             freeTime = facade.getTimeForAppointment(request);
@@ -73,6 +79,7 @@ public class ChooseTimeController {
         try {
             facade.sendToRandomAssistant(request, time);
         } catch (Exception ex) {
+            ex.printStackTrace();
             lblErrorMessage.setText(ex.getMessage());
             return;
         }

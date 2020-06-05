@@ -44,7 +44,7 @@ public class ScheduleMapper {
 
     public int getRequiredMinutesForCollection(String analysis) throws SQLException {
         String query = "select collection_minutes\n" +
-                "from analysis where id = (select analysis_id from analysis where name = ?);";
+                "from analysis where id = (select id from analysis where name = ?);";
         PreparedStatement stat = connection.prepareStatement(query);
         stat.setString(1, analysis);
         ResultSet rs = stat.executeQuery();
@@ -57,7 +57,7 @@ public class ScheduleMapper {
 
     public int getRequiredMinutesForResearch(String analysis) throws SQLException {
         String query = "select research_minutes\n" +
-                "from analysis where id = (select analysis_id from analysis where name = ?);";
+                "from analysis where id = (select id from analysis where name = ?);";
         PreparedStatement stat = connection.prepareStatement(query);
         stat.setString(1, analysis);
         ResultSet rs = stat.executeQuery();

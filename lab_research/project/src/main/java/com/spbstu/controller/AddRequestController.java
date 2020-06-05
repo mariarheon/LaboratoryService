@@ -178,15 +178,18 @@ public class AddRequestController {
         }
         try {
             if (forEdit) {
+                /*
                 request.setStatus(oldRequest.getStatus());
                 if (request.getStatus() == RequestStatus.CREATED) {
                     request.setStatus(RequestStatus.APPLIED);
                 }
+                */
                 // facade.editRequest(request);
             } else {
                 facade.addRequest(request);
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             lblErrorMessage.setText(ex.getMessage());
             return;
         }

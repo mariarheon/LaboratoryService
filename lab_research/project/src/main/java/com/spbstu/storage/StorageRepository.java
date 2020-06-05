@@ -60,11 +60,13 @@ public class StorageRepository {
     public User authenticateUser(String login, String password) throws SQLException, AuthException {
         try {
             User user = getUser(login);
-            userMapper.authenticateUser(user, password);
-            return user;
+            if (userMapper.authenticateUser(user, password)) {
+                return user;
+            }
         } catch (UserNotFoundException e) {
             throw new AuthException();
         }
+        throw new AuthException();
     }
 
     public List<Request> getRequestsForClient(User user) throws SQLException {
