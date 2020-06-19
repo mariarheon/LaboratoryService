@@ -7,6 +7,7 @@ package com.spbstu.controller;
 import com.spbstu.Main;
 import com.spbstu.dbo.Role;
 import com.spbstu.dbo.User;
+import com.spbstu.dbo.UserBase;
 import com.spbstu.facade.Facade;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -28,14 +29,8 @@ public class SignInController {
 
     @FXML
     private void onBtnSignInClick() {
-        String login = tfLogin.getText();
-        String password = tfPass.getText();
-        if (login.isEmpty() || password.isEmpty()) {
-            lblErrorMessage.setText("Логин и пароль не могут быть пустыми");
-            return;
-        }
         try {
-            facade.auth(login, password);
+            facade.auth(tfLogin.getText(), tfPass.getText());
             User user = facade.getCurrentUser();
             if (user.getRole() == Role.CLIENT) {
                 Main.showClientMain();

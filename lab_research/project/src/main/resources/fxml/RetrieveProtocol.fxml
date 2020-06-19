@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<GridPane
+        xmlns="http://javafx.com/javafx/8.0.111"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.spbstu.controller.RetrieveProtocolController"
+        hgap="20" vgap="20"
+        alignment="CENTER"
+        stylesheets="fxml/Style.css"
+>
+    <padding>
+        <Insets topRightBottomLeft="20" />
+    </padding>
+    <gridLinesVisible>false</gridLinesVisible>
+    <rowConstraints>
+        <RowConstraints />
+        <RowConstraints vgrow="ALWAYS" />
+        <RowConstraints />
+        <RowConstraints />
+    </rowConstraints>
+    <Label
+            GridPane.RowIndex="0"
+            GridPane.halignment="CENTER"
+            fx:id="lblHeader" text="Протокол действий" />
+    <ScrollPane
+            GridPane.RowIndex="1"
+            fx:id="scrollPane"
+    >
+        <Label
+                fx:id="lblProtocolText"
+                maxWidth="700"
+                wrapText="true"
+                text="" />
+    </ScrollPane>
+
+    <Label
+            GridPane.RowIndex="2"
+            GridPane.halignment="CENTER"
+            fx:id="lblErrorMessage"
+            text="" />
+
+    <AnchorPane
+            GridPane.RowIndex="3"
+        >
+        <Button
+                AnchorPane.leftAnchor="0"
+                styleClass="btn-default"
+                fx:id="btnBack" mnemonicParsing="false"
+                onMouseClicked="#onBtnBackClick" text="Назад" />
+    </AnchorPane>
+</GridPane>

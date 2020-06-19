@@ -166,20 +166,4 @@ public class TimeSpan {
     public int getDurationAsMinutes() {
         return endTime.getTotalMinutes() - startTime.getTotalMinutes();
     }
-
-    /*
-    public static void main(String[] args) {
-        List<TimeSpan> list = new ArrayList<>();
-        list.add(new TimeSpan(10, 0, 12, 0));
-        list.add(new TimeSpan(10, 0, 12, 0));
-        list.add(new TimeSpan(13, 0, 14, 0));
-        list.add(new TimeSpan(12, 30, 12, 40));
-        list.add(new TimeSpan(12, 0, 12, 30));
-        list.add(new TimeSpan(12, 40, 13, 00));
-        List<TimeSpan> res = mergeAll(list);
-        for (TimeSpan ts : res) {
-            System.out.println(ts.startTime.toString() + ", " + ts.endTime.toString());
-        }
-    }
-    */
 }

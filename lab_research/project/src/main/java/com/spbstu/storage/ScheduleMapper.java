@@ -1,9 +1,6 @@
 package com.spbstu.storage;
 
-import com.spbstu.dbo.Request;
-import com.spbstu.dbo.TimeSpan;
-import com.spbstu.dbo.User;
-import com.spbstu.dbo.Weekday;
+import com.spbstu.dbo.*;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -11,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -68,7 +64,7 @@ public class ScheduleMapper {
         return res;
     }
 
-    public List<TimeSpan> getAssistantSchedule(User assistant, Weekday weekday) throws SQLException {
+    public List<TimeSpan> getAssistantSchedule(Assistant assistant, Weekday weekday) throws SQLException {
         String query = "select start_time, end_time\n" +
                 "from schedule\n" +
                 "where assistant_id = ? and weekday = ? order by start_time;";
@@ -85,7 +81,7 @@ public class ScheduleMapper {
         return res;
     }
 
-    public List<TimeSpan> getBusyForAssistantByDate(User assistant, Date date) throws SQLException {
+    public List<TimeSpan> getBusyForAssistantByDate(Assistant assistant, Date date) throws SQLException {
         String query = "select start_time, end_time\n" +
                 "from busy\n" +
                 "where assistant_id = ? and the_date = ? order by start_time;";

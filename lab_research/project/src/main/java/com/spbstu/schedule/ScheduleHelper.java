@@ -6,7 +6,6 @@ import com.spbstu.storage.StorageRepository;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -31,12 +30,13 @@ public class ScheduleHelper {
         return getAvailableStartTimes(reqMin);
     }
 
+    @SuppressWarnings("unchecked")
     private List<AvailableAssistant> getAvailableStartTimes(int reqMinutes) throws SQLException {
         Date reqDate = getOnlyDate(request.arrivalTime);
         Weekday reqWeekday = getWeekday(reqDate);
-        List<User> assistants = repo.getUsersByRole(Role.ASSISTANT);
+        List<Assistant> assistants = (List<Assistant>)(List<?>)repo.getUsersByRole(Role.ASSISTANT);
         List<AvailableAssistant> availableAssistants = new ArrayList<>();
-        for (User assistant : assistants) {
+        for (Assistant assistant : assistants) {
             List<TimeSpan> schedule = getSchedule(assistant, reqWeekday);
             List<TimeSpan> busy = getBusyByDate(assistant, reqDate);
             List<TimeSpan> free = getFreeTime(schedule, busy);
@@ -79,11 +79,11 @@ public class ScheduleHelper {
         return Weekday.getByNumber(weekdayNumber);
     }
 
-    private List<TimeSpan> getSchedule(User assistant, Weekday weekday) throws SQLException {
+    private List<TimeSpan> getSchedule(Assistant assistant, Weekday weekday) throws SQLException {
         return repo.getAssistantSchedule(assistant, weekday);
     }
 
-    private List<TimeSpan> getBusyByDate(User assistant, Date date) throws SQLException {
+    private List<TimeSpan> getBusyByDate(Assistant assistant, Date date) throws SQLException {
         return repo.getBusyForAssistantByDate(assistant, date);
     }
 
@@ -104,10 +104,10 @@ public class ScheduleHelper {
         return res;
     }
 
-    public User chooseRandomAssistant(Time time) throws SQLException {
+    public Assistant chooseRandomAssistant(Time time) throws SQLException {
         int reqMin = getRequiredMinutesForCollection(request);
         List<AvailableAssistant> availableList = getAvailableStartTimes(reqMin);
-        List<User> suitableAssistants = getSuitableAssistants(availableList, time);
+        List<Assistant> suitableAssistants = getSuitableAssistants(availableList, time);
         if (suitableAssistants.size() <= 0) {
             return null;
         }
@@ -115,8 +115,8 @@ public class ScheduleHelper {
         return suitableAssistants.get(randIndex);
     }
 
-    private List<User> getSuitableAssistants(List<AvailableAssistant> availableList, Time time) {
-        List<User> res = new ArrayList<>();
+    private List<Assistant> getSuitableAssistants(List<AvailableAssistant> availableList, Time time) {
+        List<Assistant> res = new ArrayList<>();
         for (AvailableAssistant assistant : availableList) {
             if (assistantCanBeUsed(assistant, time)) {
                 res.add(assistant.getAssistant());
@@ -163,7 +163,7 @@ public class ScheduleHelper {
         Date collectionEnd = form.getCollectionEndDateTime();
         Date curDate = getOnlyDate(collectionEnd);
         Calendar c = Calendar.getInstance();
-        User assistant = form.getAssistant();
+        Assistant assistant = form.getAssistant();
         boolean isFirstDate = true;
         while (true) {
             List<TimeSpan> availableTimes = getAvailableStartTimes(curDate, assistant, researchReqMin);
@@ -189,7 +189,7 @@ public class ScheduleHelper {
         }
     }
 
-    private List<TimeSpan> getAvailableStartTimes(Date date, User assistant, int reqMinutes) throws SQLException {
+    private List<TimeSpan> getAvailableStartTimes(Date date, Assistant assistant, int reqMinutes) throws SQLException {
         Weekday reqWeekday = getWeekday(date);
         List<TimeSpan> schedule = getSchedule(assistant, reqWeekday);
         List<TimeSpan> busy = getBusyByDate(assistant, date);

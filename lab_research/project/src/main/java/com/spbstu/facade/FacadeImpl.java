@@ -8,6 +8,7 @@ import com.spbstu.dbo.*;
 import com.spbstu.exceptions.BadChoosedTimeException;
 import com.spbstu.schedule.ScheduleHelper;
 import com.spbstu.storage.StorageRepository;
+import com.spbstu.util.StringTypeVerifier;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,22 +23,30 @@ public class FacadeImpl implements Facade {
 
     @Override
     public void register(User user, String password) throws Exception {
+        user.validate();
+        StringTypeVerifier.notEmptyString(password, "Введите пароль");
         repository.addUser(user, password);
     }
 
     @Override
-    public List<User> getAssistants() throws Exception {
-        return repository.getUsersByRole(Role.ASSISTANT);
+    @SuppressWarnings("unchecked")
+    public List<Assistant> getAssistants() throws Exception {
+        return (List<Assistant>)(List<?>)repository.getUsersByRole(Role.ASSISTANT);
     }
 
     @Override
     public void auth(String login, String password) throws Exception {
+        StringTypeVerifier.notEmptyString(login, "Логин должен быть указан");
+        StringTypeVerifier.notEmptyString(password, "Пароль должен быть указан");
         currentUser = repository.authenticateUser(login, password);
     }
 
     @Override
     public List<Request> getRequestsForClient() throws Exception {
-        return repository.getRequestsForClient(currentUser);
+        if (currentUser instanceof Client) {
+            return repository.getRequestsForClient((Client)currentUser);
+        }
+        return null;
     }
 
     @Override
@@ -52,11 +61,13 @@ public class FacadeImpl implements Facade {
 
     @Override
     public void addRequest(Request request) throws Exception {
+        checkRequest(request);
         repository.addRequest(request);
     }
 
     @Override
     public void editRequest(Request request) throws Exception {
+        checkRequest(request);
         repository.updateRequest(request);
     }
 
@@ -65,7 +76,7 @@ public class FacadeImpl implements Facade {
         return currentUser;
     }
 
-    private void addForms(Request request, User assistant) throws Exception {
+    private void addForms(Request request, Assistant assistant) throws Exception {
         List<String> analysisList = request.getAnalysisList();
         ScheduleHelper scheduleHelper = new ScheduleHelper(repository, request);
         int minOffset = 0;
@@ -143,7 +154,7 @@ public class FacadeImpl implements Facade {
     @Override
     public void sendToRandomAssistant(Request request, Time time) throws Exception {
         ScheduleHelper scheduleHelper = new ScheduleHelper(repository, request);
-        User assistant = scheduleHelper.chooseRandomAssistant(time);
+        Assistant assistant = scheduleHelper.chooseRandomAssistant(time);
         if (assistant == null) {
             throw new BadChoosedTimeException();
         }
@@ -159,5 +170,25 @@ public class FacadeImpl implements Facade {
                 c.get(Calendar.DAY_OF_MONTH),
                 time.getHour(), time.getMinute(), 0);
         return c.getTime();
+    }
+
+    public void checkRequest(Request request) throws Exception {
+        StringTypeVerifier.notEmptyString(request.getSurname(), "Фамилия должна быть указана");
+        StringTypeVerifier.notEmptyString(request.getName(), "Имя должно быть указано");
+        StringTypeVerifier.notEmptyString(request.getPatronymic(), "Отчество должно быть указано");
+        if (request.getAnalysisList().size() <= 0) {
+            throw new Exception("Необходимо выбрать хотя бы 1 анализ");
+        }
+    }
+
+    @Override
+    public void cancelRequest(Request request) throws Exception {
+        request.setStatus(RequestStatus.CANCELED);
+        repository.updateRequest(request);
+    }
+
+    @Override
+    public String getProtocol(String analysis) throws Exception {
+        return repository.getProtocol(analysis);
     }
 }

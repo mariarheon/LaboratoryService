@@ -160,7 +160,7 @@ public class FormMapper {
             Request request = requestMapper.findById(rs.getInt("request_id"));
             form.setRequest(request);
 
-            User assistant = userMapper.findByID(rs.getInt("assistant_id"));
+            Assistant assistant = (Assistant)userMapper.findByID(rs.getInt("assistant_id"));
             form.setAssistant(assistant);
 
             String analysis = requestMapper.findAnalysisById(rs.getInt("analysis_id"));
@@ -254,7 +254,7 @@ public class FormMapper {
             Request request = requestMapper.findById(rs.getInt("request_id"));
             form.setRequest(request);
 
-            User assistant = userMapper.findByID(rs.getInt("assistant_id"));
+            Assistant assistant = (Assistant)userMapper.findByID(rs.getInt("assistant_id"));
             form.setAssistant(assistant);
 
             String analysis = requestMapper.findAnalysisById(rs.getInt("analysis_id"));

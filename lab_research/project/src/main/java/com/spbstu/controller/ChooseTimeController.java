@@ -3,6 +3,7 @@ package com.spbstu.controller;
 import com.spbstu.Main;
 import com.spbstu.dbo.*;
 import com.spbstu.facade.Facade;
+import com.spbstu.util.StringTypeVerifier;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -69,14 +70,8 @@ public class ChooseTimeController {
 
     @FXML
     private void onBtnApplyClick() {
-        Time time = null;
         try {
-            time = Time.parse(tfTime.getText());
-        } catch (Exception ex) {
-            lblErrorMessage.setText("Время должно быть указано в формате HH:mm");
-            return;
-        }
-        try {
+            Time time = StringTypeVerifier.time(tfTime.getText(), "Время должно быть указано в формате HH:mm");
             facade.sendToRandomAssistant(request, time);
         } catch (Exception ex) {
             ex.printStackTrace();

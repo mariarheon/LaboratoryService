@@ -50,7 +50,7 @@ public class BlankEditController {
     }
 
     private void initFields() {
-        final int startRowIndex = 6;
+        final int startRowIndex = 7;
         int curRow = startRowIndex;
         List<FormField> fields = form.getFields();
         for (FormField field : fields) {
@@ -96,5 +96,10 @@ public class BlankEditController {
     @FXML
     private void onBtnBackClick() {
         Main.showAssistantMain();
+    }
+
+    @FXML
+    private void onBtnRetrieveProtocolClick() {
+        Main.showRetrieveProtocol(form);
     }
 }

@@ -96,13 +96,13 @@ public class RequestMapper {
         stat.execute();
     }
 
-    public List<Request> findByUser(User user) throws SQLException {
+    public List<Request> findByClient(Client client) throws SQLException {
         String query = "select id, surname, name, patronymic, sex, " +
                 " passport_series, passport_number, arrival_time, client_id, " +
                 " status " +
                 " from request where client_id = ?;";
         PreparedStatement stat = connection.prepareStatement(query);
-        stat.setInt(1, user.getId());
+        stat.setInt(1, client.getId());
         ResultSet rs = stat.executeQuery();
         List<Request> res = new ArrayList<Request>();
         while (rs.next()) {
@@ -116,7 +116,7 @@ public class RequestMapper {
             request.setPassportNumber(rs.getInt("passport_number"));
             request.setStatus(RequestStatus.getByStr(rs.getString("status")));
             request.setArrivalTime(new java.util.Date(rs.getTimestamp("arrival_time").getTime()));
-            request.setClient(user);
+            request.setClient(client);
             res.add(request);
         }
         rs.close();
@@ -147,7 +147,11 @@ public class RequestMapper {
             request.setStatus(RequestStatus.getByStr(rs.getString("status")));
             request.setArrivalTime(new java.util.Date(rs.getTimestamp("arrival_time").getTime()));
             User client = userMapper.findByID(rs.getInt("client_id"));
-            request.setClient(client);
+            if (client instanceof Client) {
+                request.setClient((Client)client);
+            } else {
+                throw new RuntimeException("ID of client expected, but ID of another type of user found");
+            }
         }
         rs.close();
         request.setAnalysisList(findAnalysis(request.getId()));
@@ -173,7 +177,12 @@ public class RequestMapper {
             request.setPassportNumber(rs.getInt("passport_number"));
             request.setStatus(RequestStatus.getByStr(rs.getString("status")));
             request.setArrivalTime(new java.util.Date(rs.getTimestamp("arrival_time").getTime()));
-            request.setClient(userMapper.findByID(rs.getInt("client_id")));
+            User client = userMapper.findByID(rs.getInt("client_id"));
+            if (client instanceof Client) {
+                request.setClient((Client)client);
+            } else {
+                throw new RuntimeException("ID of client expected, but ID of another type of user found");
+            }
             res.add(request);
         }
         rs.close();

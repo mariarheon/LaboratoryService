@@ -104,6 +104,20 @@ public class Main extends Application {
         }
     }
 
+    public static void showRetrieveProtocol(Form form) {
+        try {
+            String fxmlFile = "/fxml/RetrieveProtocol.fxml";
+            FXMLLoader loader = new FXMLLoader();
+            Parent root = loader.load(Main.class.getResourceAsStream(fxmlFile));
+            RetrieveProtocolController controller = loader.getController();
+            controller.setData(form);
+            Scene scene = new Scene(root, 800, 600);
+            mainStage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void showBlankDisplay(Form form) {
         try {
             String fxmlFile = "/fxml/BlankDisplay.fxml";

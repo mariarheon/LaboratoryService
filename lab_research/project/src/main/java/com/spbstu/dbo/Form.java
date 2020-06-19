@@ -12,7 +12,7 @@ public class Form {
     private int id;
     private Request request;
     private String analysis;
-    private User assistant;
+    private Assistant assistant;
     private String barcode;
     private FormStatus status;
     private List<FormField> fields;
@@ -110,11 +110,11 @@ public class Form {
         this.analysis = analysis;
     }
 
-    public User getAssistant() {
+    public Assistant getAssistant() {
         return assistant;
     }
 
-    public void setAssistant(User assistant) {
+    public void setAssistant(Assistant assistant) {
         this.assistant = assistant;
     }
 

@@ -1,20 +1,17 @@
 package com.spbstu.controller;
 
 import com.spbstu.Main;
+import com.spbstu.dbo.Assistant;
 import com.spbstu.dbo.Request;
-import com.spbstu.dbo.RequestStatus;
-import com.spbstu.dbo.User;
+import com.spbstu.dbo.UserBase;
 import com.spbstu.facade.Facade;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,23 +23,23 @@ public class ChooseAssistantController {
     private Request request;
 
     @FXML
-    private TableView<User> tableAssistants;
+    private TableView<UserBase> tableAssistants;
 
     @FXML
-    private TableColumn<User, String> colSurname;
+    private TableColumn<UserBase, String> colSurname;
     @FXML
-    private TableColumn<User, String> colName;
+    private TableColumn<UserBase, String> colName;
     @FXML
-    private TableColumn<User, String> colPatronymic;
+    private TableColumn<UserBase, String> colPatronymic;
     @FXML
-    private TableColumn<User, String> colBtnChoose;
+    private TableColumn<UserBase, String> colBtnChoose;
 
     @FXML
     private Label lblErrorMessage;
 
     @FXML
     private void initialize() {
-        List<User> assistantList = new ArrayList<User>();
+        List<Assistant> assistantList = new ArrayList<Assistant>();
         try {
             assistantList = facade.getAssistants();
         } catch (Exception ex) {
@@ -54,7 +51,7 @@ public class ChooseAssistantController {
         colBtnChoose.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
         // setBtnChooseCellFactory();
 
-        ObservableList<User> items = FXCollections.observableArrayList();
+        ObservableList<UserBase> items = FXCollections.observableArrayList();
         items.addAll(assistantList);
         tableAssistants.setItems(items);
     }

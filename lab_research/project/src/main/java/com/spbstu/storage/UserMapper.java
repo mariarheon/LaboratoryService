@@ -7,9 +7,9 @@ package com.spbstu.storage;
 import com.spbstu.dbo.Role;
 import com.spbstu.dbo.Sex;
 import com.spbstu.dbo.User;
+import com.spbstu.dbo.UserBase;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -66,10 +66,10 @@ public class UserMapper {
 
         List<User> res = new ArrayList<User>();
         while (rs.next()) {
-            User user = new User();
+            Role theRole = Role.getByStr(rs.getString("role"));
+            User user = UserBase.createByRole(theRole);
             user.setId(rs.getInt("id"));
             user.setPhone(rs.getString("phone"));
-            user.setRole(Role.getByStr(rs.getString("role")));
             user.setLogin(rs.getString("login"));
             user.setSurname(rs.getString("surname"));
             user.setName(rs.getString("name"));
@@ -89,10 +89,10 @@ public class UserMapper {
         ResultSet rs = stat.executeQuery();
 
         if (!rs.next()) return null;
-        User user = new User();
+        Role theRole = Role.getByStr(rs.getString("role"));
+        User user = UserBase.createByRole(theRole);
         user.setId(rs.getInt("id"));
         user.setPhone(rs.getString("phone"));
-        user.setRole(Role.getByStr(rs.getString("role")));
         user.setLogin(login);
         user.setSurname(rs.getString("surname"));
         user.setName(rs.getString("name"));
@@ -110,10 +110,10 @@ public class UserMapper {
         ResultSet rs = stat.executeQuery();
 
         if (!rs.next()) return null;
-        User user = new User();
+        Role theRole = Role.getByStr(rs.getString("role"));
+        User user = UserBase.createByRole(theRole);
         user.setId(rs.getInt("id"));
         user.setPhone(rs.getString("phone"));
-        user.setRole(Role.getByStr(rs.getString("role")));
         user.setLogin(rs.getString("login"));
         user.setSurname(rs.getString("surname"));
         user.setName(rs.getString("name"));

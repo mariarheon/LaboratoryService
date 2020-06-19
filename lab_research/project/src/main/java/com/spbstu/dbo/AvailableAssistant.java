@@ -6,19 +6,19 @@ import java.util.List;
  *
  */
 public class AvailableAssistant {
-    private User assistant;
+    private Assistant assistant;
     private List<TimeSpan> availableTimeSpanList;
 
-    public AvailableAssistant(User assistant, List<TimeSpan> availableTimeSpanList) {
+    public AvailableAssistant(Assistant assistant, List<TimeSpan> availableTimeSpanList) {
         this.assistant = assistant;
         this.availableTimeSpanList = availableTimeSpanList;
     }
 
-    public User getAssistant() {
+    public Assistant getAssistant() {
         return assistant;
     }
 
-    public void setAssistant(User assistant) {
+    public void setAssistant(Assistant assistant) {
         this.assistant = assistant;
     }
 

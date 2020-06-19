@@ -92,6 +92,13 @@
               GridPane.halignment="LEFT"
               fx:id="lblOutPatronymic" text="?" />
 
+      <Button
+              GridPane.ColumnIndex="0" GridPane.RowIndex="6" GridPane.ColumnSpan="3"
+              styleClass="btn-default"
+              fx:id="btnRetrieveProtocol" mnemonicParsing="false"
+              onMouseClicked="#onBtnRetrieveProtocolClick" text="Получить протокол действий"
+         />
+
       <Label
               GridPane.ColumnIndex="0" GridPane.RowIndex="0" GridPane.ColumnSpan="3"
               GridPane.halignment="CENTER"

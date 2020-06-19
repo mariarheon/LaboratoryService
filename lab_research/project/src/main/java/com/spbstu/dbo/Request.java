@@ -17,7 +17,7 @@ public class Request {
     public List<String> analysisList;
     public RequestStatus status;
     public Date arrivalTime;
-    public User client;
+    public Client client;
 
     public String getClientPhone() {
         return client.getPhone();
@@ -27,11 +27,11 @@ public class Request {
         return client.getName();
     }
 
-    public User getClient() {
+    public Client getClient() {
         return client;
     }
 
-    public void setClient(User client) {
+    public void setClient(Client client) {
         this.client = client;
     }
 

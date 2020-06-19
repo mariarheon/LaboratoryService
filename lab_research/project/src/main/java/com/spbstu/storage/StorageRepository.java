@@ -9,6 +9,7 @@ import com.spbstu.exceptions.UserAlreadyExistsException;
 import com.spbstu.exceptions.UserNotFoundException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ public class StorageRepository {
     private RequestMapper requestMapper;
     private FormMapper formMapper;
     private ScheduleMapper scheduleMapper;
+    private ProtocolMapper protocolMapper;
 
     private static StorageRepository inst;
 
@@ -28,6 +30,7 @@ public class StorageRepository {
             requestMapper = new RequestMapper();
             formMapper = new FormMapper();
             scheduleMapper = new ScheduleMapper();
+            protocolMapper = new ProtocolMapper();
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
@@ -69,8 +72,8 @@ public class StorageRepository {
         throw new AuthException();
     }
 
-    public List<Request> getRequestsForClient(User user) throws SQLException {
-        return requestMapper.findByUser(user);
+    public List<Request> getRequestsForClient(Client client) throws SQLException {
+        return requestMapper.findByClient(client);
     }
 
     public List<Request> getRequests() throws SQLException {
@@ -117,23 +120,19 @@ public class StorageRepository {
         return scheduleMapper.getRequiredMinutesForCollection(request);
     }
 
-    public List<TimeSpan> getAssistantSchedule(User assistant, Weekday weekday) throws SQLException {
+    public List<TimeSpan> getAssistantSchedule(Assistant assistant, Weekday weekday) throws SQLException {
         return scheduleMapper.getAssistantSchedule(assistant, weekday);
     }
 
-    public List<TimeSpan> getBusyForAssistantByDate(User assistant, Date date) throws SQLException {
+    public List<TimeSpan> getBusyForAssistantByDate(Assistant assistant, Date date) throws SQLException {
         return scheduleMapper.getBusyForAssistantByDate(assistant, date);
     }
 
-    /*
-    synchronized public void drop() throws DBConnectionException {
-        try {
-            DataGateway.getInstance().dropAll();
-        } catch (SQLException e) {
-            throw new DBConnectionException();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public String getProtocol(String analysis) throws SQLException {
+        return protocolMapper.find(analysis);
     }
-    */
+
+    synchronized public void revive(InputStream reviveScript) throws IOException, SQLException {
+        DataGateway.getInstance().revive(reviveScript);
+    }
 }

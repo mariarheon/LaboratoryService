@@ -3,6 +3,7 @@ package com.spbstu.controller;
 import com.spbstu.Main;
 import com.spbstu.dbo.*;
 import com.spbstu.facade.Facade;
+import com.spbstu.util.StringTypeVerifier;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -106,86 +107,40 @@ public class AddRequestController {
 
     @FXML
     private void onBtnApplyClick() {
-        if (tfSurname.getText().equals("")) {
-            lblErrorMessage.setText("Фамилия должна быть указана");
-            return;
-        }
-        if (tfName.getText().equals("")) {
-            lblErrorMessage.setText("Имя должно быть указано");
-            return;
-        }
-        if (tfPatronymic.getText().equals("")) {
-            lblErrorMessage.setText("Отчество должно быть указано");
-            return;
-        }
-        String sex = cbSex.getValue();
-        if (sex == null) {
-            lblErrorMessage.setText("Пол должен быть указан");
-            return;
-        }
-        int passportSeries = 0, passportNumber = 0;
+        Request request;
         try {
-            passportSeries = Integer.parseInt(tfPassportSeries.getText());
-        } catch (NumberFormatException ex) {
-            lblErrorMessage.setText("Серия паспорта должна быть числом");
-            return;
-        }
-        try {
-            passportNumber = Integer.parseInt(tfPassportNumber.getText());
-        } catch (NumberFormatException ex) {
-            lblErrorMessage.setText("Номер паспорта должен быть числом");
-            return;
-        }
-        SimpleDateFormat dFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
-        String arrivalTimeStr = tfArrivalTime.getText();
-        Date arrivalTime = null;
-        try {
-            arrivalTime = dFormat.parse(arrivalTimeStr);
-        } catch (ParseException ex) {
-            lblErrorMessage.setText("Время прибытия должно быть в формате dd.MM.yyyy");
-            return;
-        }
-        List<String> analysisList = new ArrayList<String>();
-        ObservableList<Node> analysisCtrlList = paneAnalysis.getChildren();
-        for (Node analysisCtrl : analysisCtrlList) {
-            if (analysisCtrl instanceof CheckBox) {
-                CheckBox cbAnalysisCtrl = (CheckBox) analysisCtrl;
-                if (cbAnalysisCtrl.isSelected()) {
-                    analysisList.add(cbAnalysisCtrl.getText());
+            int passportSeries = StringTypeVerifier.integer(tfPassportSeries.getText(), "Серия паспорта должна быть числом");
+            int passportNumber = StringTypeVerifier.integer(tfPassportNumber.getText(), "Номер паспорта должен быть числом");
+            Date arrivalTime = StringTypeVerifier.date(tfArrivalTime.getText(), "Время прибытия должно быть в формате dd.MM.yyyy");
+            StringTypeVerifier.notEmptyString(cbSex.getValue(), "Пол должен быть указан");
+            List<String> analysisList = new ArrayList<String>();
+            ObservableList<Node> analysisCtrlList = paneAnalysis.getChildren();
+            for (Node analysisCtrl : analysisCtrlList) {
+                if (analysisCtrl instanceof CheckBox) {
+                    CheckBox cbAnalysisCtrl = (CheckBox) analysisCtrl;
+                    if (cbAnalysisCtrl.isSelected()) {
+                        analysisList.add(cbAnalysisCtrl.getText());
+                    }
                 }
             }
-        }
-        if (analysisList.size() <= 0) {
-            lblErrorMessage.setText("Необходимо выбрать хотя бы 1 анализ");
-            return;
-        }
-
-        Request request = new Request();
-        request.setSurname(tfSurname.getText());
-        request.setName(tfName.getText());
-        request.setPatronymic(tfPatronymic.getText());
-        request.setSex(Sex.getByStr(cbSex.getValue()));
-        request.setPassportSeries(passportSeries);
-        request.setPassportNumber(passportNumber);
-        request.setArrivalTime(arrivalTime);
-        request.setAnalysisList(analysisList);
-        request.setStatus(RequestStatus.CREATED);
-        if (forEdit) {
-            request.setId(oldRequest.getId());
-            request.setClient(oldRequest.getClient());
-        } else {
-            request.setClient(facade.getCurrentUser());
-        }
-        try {
+            request = new Request();
+            request.setSurname(tfSurname.getText());
+            request.setName(tfName.getText());
+            request.setPatronymic(tfPatronymic.getText());
+            request.setSex(Sex.getByStr(cbSex.getValue()));
+            request.setPassportSeries(passportSeries);
+            request.setPassportNumber(passportNumber);
+            request.setArrivalTime(arrivalTime);
+            request.setAnalysisList(analysisList);
+            request.setStatus(RequestStatus.CREATED);
             if (forEdit) {
-                /*
-                request.setStatus(oldRequest.getStatus());
-                if (request.getStatus() == RequestStatus.CREATED) {
-                    request.setStatus(RequestStatus.APPLIED);
-                }
-                */
-                // facade.editRequest(request);
+                request.setId(oldRequest.getId());
+                request.setClient(oldRequest.getClient());
             } else {
+                request.setClient((Client) facade.getCurrentUser());
+            }
+            facade.checkRequest(request);
+            if (!forEdit) {
                 facade.addRequest(request);
             }
         } catch (Exception ex) {

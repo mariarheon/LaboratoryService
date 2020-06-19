@@ -6,7 +6,6 @@ package com.spbstu.facade;
 
 import com.spbstu.dbo.*;
 
-import java.util.Date;
 import java.util.List;
 
 public interface Facade {
@@ -14,7 +13,7 @@ public interface Facade {
     void auth(String login, String password) throws Exception;
     List<Request> getRequestsForClient() throws Exception;
     List<Request> getRequests() throws Exception;
-    List<User> getAssistants() throws Exception;
+    List<Assistant> getAssistants() throws Exception;
     void logout();
     void addRequest(Request request) throws Exception;
     void editRequest(Request request) throws Exception;
@@ -26,4 +25,7 @@ public interface Facade {
     List<String> getAnalysisList() throws Exception;
     List<TimeSpan> getTimeForAppointment(Request request) throws Exception;
     void sendToRandomAssistant(Request request, Time time) throws Exception;
+    void checkRequest(Request request) throws Exception;
+    void cancelRequest(Request request) throws Exception;
+    String getProtocol(String analysis) throws Exception;
 }
